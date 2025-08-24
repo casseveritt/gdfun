@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://parogsmheurq"]
+
+[ext_resource type="Script" uid="uid://1pq5i1ei6wms" path="res://main.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://dv1d8bxbgny6f" path="res://thing.gd" id="1_ig7tw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_0xm2m"]
+sky_material = SubResource("ProceduralSkyMaterial_ig7tw")
+
+[sub_resource type="Environment" id="Environment_h2yge"]
+background_mode = 2
+sky = SubResource("Sky_0xm2m")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0xm2m")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_h2yge")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Thing" type="Node3D" parent="."]
+script = ExtResource("1_ig7tw")
+
+[node name="Sphere" type="CSGSphere3D" parent="Thing"]
+radial_segments = 18
+rings = 9
+
+[node name="BoxNegX" type="CSGBox3D" parent="Thing"]
+
+[node name="BoxPosX" type="CSGBox3D" parent="Thing"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.36799)
