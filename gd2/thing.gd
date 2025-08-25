@@ -4,6 +4,8 @@ extends Node3D
 @onready var box_neg_x : CSGBox3D = $BoxNegX
 @onready var box_pos_x : CSGBox3D = $BoxPosX
 
+@onready var sphere_cld : CollisionShape3D = $SphereCld
+
 func _ready():
 	update_dependent()
 
