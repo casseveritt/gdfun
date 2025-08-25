@@ -29,7 +29,7 @@ func _process(delta: float) -> void:
 			obj = result.collider
 		if obj != hit:
 			if hit:
-				print("Object exit: ", hit.name)
+				hit.get_parent().exit_child(hit)
 			if obj:
-				print("object enter: ", obj.name)
+				obj.get_parent().enter_child(obj)
 			hit = obj
