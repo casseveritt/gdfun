@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://parogsmheurq"]
 
 [ext_resource type="Script" uid="uid://1pq5i1ei6wms" path="res://main.gd" id="1_0xm2m"]
-[ext_resource type="Script" uid="uid://dv1d8bxbgny6f" path="res://thing.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://d0dn15ttfrn7q" path="res://thing.tscn" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://cg47mw1hg7swf" path="res://camera_3d.gd" id="3_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
@@ -27,23 +27,9 @@ environment = SubResource("Environment_h2yge")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Thing" type="Node3D" parent="."]
-script = ExtResource("1_ig7tw")
-
-[node name="Sphere" type="CSGSphere3D" parent="Thing"]
-use_collision = true
-radial_segments = 18
-rings = 9
-
-[node name="BoxNegX" type="CSGBox3D" parent="Thing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
-use_collision = true
-
-[node name="BoxPosX" type="CSGBox3D" parent="Thing"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
-use_collision = true
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.36799)
 fov = 60.0
 script = ExtResource("3_h2yge")
+
+[node name="Thing" parent="." instance=ExtResource("3_1bvp3")]

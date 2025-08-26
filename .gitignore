@@ -1,3 +1,7 @@
+.gitignore
+.gitattributes
+.editorconfig
+
 # Godot 4+ specific ignores
 .godot/
 .nomedia

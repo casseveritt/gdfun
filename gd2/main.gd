@@ -16,6 +16,8 @@ func _input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	time += delta
+
+func _physics_process(_delta: float) -> void:
 	if mouse_pos:
 		var from = camera.project_ray_origin(mouse_pos)
 		var to = from + camera.project_ray_normal(mouse_pos) * 1000
@@ -31,5 +33,6 @@ func _process(delta: float) -> void:
 			if hit:
 				hit.get_parent().exit_child(hit)
 			if obj:
+				print(result)
 				obj.get_parent().enter_child(obj)
 			hit = obj

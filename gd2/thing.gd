@@ -12,8 +12,8 @@ func _ready():
 	entered_material.albedo_color = Color.YELLOW
 	update_dependent()
 
-func _process(delta: float) -> void:
-	sphere.radius = 0.5 * (0.5 * cos(Main.time * PI) + 0.5)
+func _process(_delta: float) -> void:
+	sphere.radius = 0.5 * (0.5 * cos(Main.time * PI / 10) + 0.5)
 	update_dependent()
 
 func enter_child(child: GeometryInstance3D):

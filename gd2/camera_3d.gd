@@ -23,6 +23,10 @@ func _input(event):
 func _process(delta):
 		var direction = Vector3.ZERO
 		var b = global_transform.basis
+		if Input.is_key_pressed(KEY_UP):
+			direction -= b.z
+		if Input.is_key_pressed(KEY_DOWN):
+			direction += b.z
 		if Input.is_key_pressed(KEY_W):
 			direction += b.y
 		if Input.is_key_pressed(KEY_A):

@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0dn15ttfrn7q"]
+
+[ext_resource type="Script" uid="uid://dv1d8bxbgny6f" path="res://thing.gd" id="1_imm6j"]
+
+[node name="Thing" type="Node3D"]
+script = ExtResource("1_imm6j")
+
+[node name="Sphere" type="CSGSphere3D" parent="."]
+use_collision = true
+radial_segments = 18
+rings = 9
+
+[node name="BoxNegX" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+use_collision = true
+
+[node name="BoxPosX" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+use_collision = true
