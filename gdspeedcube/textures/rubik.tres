@@ -1,3 +1,7 @@
-[gd_resource type="Cubemap" format=3 uid="uid://dy1gempuh8y4i"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dy1gempuh8y4i"]
+
+[ext_resource type="Shader" uid="uid://3t735gqp4y7s" path="res://piece.gdshader" id="1_n7jig"]
 
 [resource]
+render_priority = 0
+shader = ExtResource("1_n7jig")
