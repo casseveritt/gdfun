@@ -9,9 +9,9 @@ func _run():
 	make_rubik_cubemap()
 
 func make_rubik_cubemap():
-	var w := 64
-	var border := 4
-	var round := 8
+	var w := 256
+	var border := w / 16
+	var rnd := 2 * border
 	var cubemap := Cubemap.new()
 
 	var face_color: Array[Color] = [Color.RED, Color.ORANGE, Color.YELLOW, Color.WHITE, Color.DARK_GREEN, Color.BLUE]
@@ -24,23 +24,23 @@ func make_rubik_cubemap():
 		img.fill(Color.BLACK)
 		img.fill_rect(Rect2i(border, border, w - 2 * border, w - 2 * border), c)
 
-		for i in round * 2:
-			for j in round * 2:
-				var fi = i + 0.5 - round
-				var fj = j + 0.5 - round
+		for i in rnd * 2:
+			for j in rnd * 2:
+				var fi = i + 0.5 - rnd
+				var fj = j + 0.5 - rnd
 				var r = sqrt(fi * fi + fj * fj)
 				var pi = i + border
 				var pj = j + border
-				if i >= round:
-					pi += (w - 2 * (border + round))
-				if j >= round:
-					pj += (w - 2 * (border + round))
+				if i >= rnd:
+					pi += (w - 2 * (border + rnd))
+				if j >= rnd:
+					pj += (w - 2 * (border + rnd))
 				
 				var col = Color.BLACK
-				if r > float(round):
+				if r > float(rnd):
 					img.set_pixel(pi, pj, col)
 		
-		img.save_png("res://textures/rubik" + str(face) + ".png")
+		#img.save_png("res://textures/rubik" + str(face) + ".png")
 		img.generate_mipmaps()
 		images.push_back(img)
 	var err = cubemap.create_from_images(images)
