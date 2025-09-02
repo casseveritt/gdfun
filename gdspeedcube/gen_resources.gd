@@ -5,16 +5,16 @@ extends EditorScript
 @export_file("*.res") var save_path: String = "res://textures/rubik.tres"
 
 func _run():
-	print("CASS: - running the script")
+	print("running resource synthesis script")
 	make_rubik_cubemap()
 
 func make_rubik_cubemap():
 	var w := 256
-	var border := w / 16
+	var border := int(w >> 4)
 	var rnd := 2 * border
 	var cubemap := Cubemap.new()
 
-	var face_color: Array[Color] = [Color.RED, Color.ORANGE, Color.YELLOW, Color.WHITE, Color.DARK_GREEN, Color.BLUE]
+	var face_color: Array[Color] = [Color.ORANGE_RED, Color.RED, Color.WHITE, Color.YELLOW, Color.BLUE, Color.DARK_GREEN]
 	var images = []
 	DirAccess.make_dir_absolute("res://textures/")
 	for face in 6:
@@ -43,8 +43,7 @@ func make_rubik_cubemap():
 		#img.save_png("res://textures/rubik" + str(face) + ".png")
 		img.generate_mipmaps()
 		images.push_back(img)
-	var err = cubemap.create_from_images(images)
-	print("cass: ", err)
+	cubemap.create_from_images(images)
 	var sm := ShaderMaterial.new()
 	sm.shader = load("res://piece.gdshader")
 	sm.set_shader_parameter("texcube", cubemap)

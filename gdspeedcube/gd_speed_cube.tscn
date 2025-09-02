@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8ev6a3te6tj5"]
+[gd_scene load_steps=7 format=3 uid="uid://c8ev6a3te6tj5"]
 
 [ext_resource type="Script" uid="uid://c02j004apdmdn" path="res://speed_cube.gd" id="1_2e22g"]
+[ext_resource type="Script" uid="uid://bv7a202yg45qe" path="res://gd_speed_cube.gd" id="1_kyuas"]
 [ext_resource type="Material" uid="uid://c6sv5nr0ikmol" path="res://rubik_mat.tres" id="2_2e22g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w17b2"]
@@ -17,6 +18,7 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="GdSpeedCube" type="Node3D"]
+script = ExtResource("1_kyuas")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
