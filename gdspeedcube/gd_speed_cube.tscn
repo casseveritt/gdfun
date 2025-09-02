@@ -34,7 +34,7 @@ environment = SubResource("Environment_kyuas")
 [node name="SpeedCube" type="Node3D" parent="."]
 script = ExtResource("1_2e22g")
 
-[node name="Piece0" type="CSGBox3D" parent="SpeedCube"]
+[node name="Piece" type="CSGBox3D" parent="SpeedCube"]
 size = Vector3(0.1, 0.1, 0.1)
 material = ExtResource("2_2e22g")
 
