@@ -11,7 +11,8 @@ class Edge:
 	var v1: Vertex
 	var v2: Vertex
 	var faces = []
-	var sharpness: float = 0.0
+	var sharpness: float = 1.0
+	var is_boundary: bool = false
 
 class Face:
 	var verts = []
@@ -38,20 +39,14 @@ func generate_cube_topology() -> Dictionary:
 		Vector3( 1,  1,  1), # 6
 		Vector3(-1,  1,  1), # 7
 	]
-	# Each face: indices are in CCW order when viewed from outside
-	# -Z: front
-	# +Z: back
-	# -Y: bottom
-	# +Y: top
-	# -X: left
-	# +X: right
+	# CCW winding
 	var cube_faces = [
-		[0, 1, 2, 3], # -Z (front) -- OK
-		[5, 4, 7, 6], # +Z (back)   -- FIXED (was [4,5,6,7])
-		[0, 4, 5, 1], # -Y (bottom) -- FIXED (was [0,1,5,4])
-		[3, 2, 6, 7], # +Y (top)    -- FIXED (was [2,3,7,6])
-		[0, 3, 7, 4], # -X (left)   -- OK
-		[1, 5, 6, 2], # +X (right)  -- OK
+		[0, 1, 2, 3], # -Z (front)
+		[5, 4, 7, 6], # +Z (back)
+		[0, 4, 5, 1], # -Y (bottom)
+		[3, 2, 6, 7], # +Y (top)
+		[0, 3, 7, 4], # -X (left)
+		[1, 5, 6, 2], # +X (right)
 	]
 
 	for i in cube_vertices.size():
@@ -90,7 +85,8 @@ func generate_cube_topology() -> Dictionary:
 		faces.append(f)
 
 	for edge in edges:
-		edge.sharpness = 0.5
+		edge.is_boundary = edge.faces.size() == 1
+		edge.sharpness = 1.0 # SHARP CUBE
 
 	return {
 		"vertices": verts,
@@ -100,7 +96,7 @@ func generate_cube_topology() -> Dictionary:
 
 func catmull_clark_subdivide_multi(mesh_topo: Dictionary, iterations: int) -> Dictionary:
 	var topo = mesh_topo
-	for i in iterations:
+	for i in range(iterations):
 		topo = catmull_clark_subdivide(topo)
 	return topo
 
@@ -109,10 +105,8 @@ func catmull_clark_subdivide(mesh_topo: Dictionary) -> Dictionary:
 	var old_edges = mesh_topo["edges"]
 	var old_faces = mesh_topo["faces"]
 
+	# Face points
 	var face_points = []
-	var edge_points = {}
-	var vertex_points = []
-
 	for f in old_faces:
 		var avg = Vector3.ZERO
 		for v in f.verts:
@@ -120,35 +114,64 @@ func catmull_clark_subdivide(mesh_topo: Dictionary) -> Dictionary:
 		avg /= f.verts.size()
 		face_points.append(avg)
 
+	# Edge points
+	var edge_points = {}
 	for e in old_edges:
-		var fp_sum = Vector3.ZERO
-		for f in e.faces:
-			fp_sum += face_points[old_faces.find(f)]
-		fp_sum /= e.faces.size()
-		var ep = (e.v1.pos + e.v2.pos + fp_sum) / (2 + e.faces.size())
-		if e.sharpness > 0.0:
-			var sharp_ep = (e.v1.pos + e.v2.pos) * 0.5
-			ep = lerp(ep, sharp_ep, e.sharpness)
-		edge_points[e] = ep
+		if e.is_boundary or e.sharpness >= 1.0:
+			edge_points[e] = (e.v1.pos + e.v2.pos) * 0.5
+		else:
+			var fp_sum = Vector3.ZERO
+			for f in e.faces:
+				fp_sum += face_points[old_faces.find(f)]
+			fp_sum /= e.faces.size()
+			var smooth_ep = (e.v1.pos + e.v2.pos + fp_sum) / 3.0
+			var crease_ep = (e.v1.pos + e.v2.pos) * 0.5
+			edge_points[e] = lerp(smooth_ep, crease_ep, e.sharpness)
 
+	# Vertex points
+	var vertex_points = []
 	for v in old_verts:
-		var F = Vector3.ZERO
-		for f in v.faces:
-			F += face_points[old_faces.find(f)]
-		F /= v.faces.size()
-		var R = Vector3.ZERO
+		var crease_edges = []
+		var boundary_edges = []
 		for e in v.edges:
-			R += edge_points[e]
-		R /= v.edges.size()
-		var n = v.faces.size()
-		var new_v = (F + 2*R + (n-3)*v.pos) / n
-		var max_sharp = 0.0
-		for e in v.edges:
-			max_sharp = max(max_sharp, e.sharpness)
-		if max_sharp > 0.0:
-			new_v = lerp(new_v, v.pos, max_sharp)
-		vertex_points.append(new_v)
+			if e.is_boundary or e.sharpness >= 1.0:
+				crease_edges.append(e)
+			if e.is_boundary:
+				boundary_edges.append(e)
+		if crease_edges.size() >= 3:
+			# Corner vertex: stays put!
+			vertex_points.append(v.pos)
+		elif crease_edges.size() == 2:
+			# Crease vertex: average of self and crease midpoints
+			var mid1 = (crease_edges[0].v1.pos + crease_edges[0].v2.pos) * 0.5
+			var mid2 = (crease_edges[1].v1.pos + crease_edges[1].v2.pos) * 0.5
+			var new_v = (v.pos + mid1 + mid2) / 3.0
+			vertex_points.append(new_v)
+		elif boundary_edges.size() > 0:
+			# Boundary vertex: average of self and boundary midpoints
+			var boundary_mid = Vector3.ZERO
+			var count = 0
+			for e in boundary_edges:
+				boundary_mid += (e.v1.pos + e.v2.pos) * 0.5
+				count += 1
+			boundary_mid /= count
+			var new_v = (boundary_mid + v.pos) * 0.5
+			vertex_points.append(new_v)
+		else:
+			# Smooth vertex: standard Catmull-Clark
+			var F = Vector3.ZERO
+			for f in v.faces:
+				F += face_points[old_faces.find(f)]
+			F /= v.faces.size()
+			var R = Vector3.ZERO
+			for e in v.edges:
+				R += edge_points[e]
+			R /= v.edges.size()
+			var n = v.faces.size()
+			var new_v = (F + 2*R + (n-3)*v.pos) / n
+			vertex_points.append(new_v)
 
+	# Build new topology
 	var new_vertices = []
 	var vertex_map = {}
 	var get_vertex = func(pos: Vector3) -> int:
@@ -167,7 +190,7 @@ func catmull_clark_subdivide(mesh_topo: Dictionary) -> Dictionary:
 		var fp = face_points[fi]
 		for i in range(f.verts.size()):
 			var v0 = f.verts[i]
-			var _v1 = f.verts[(i+1)%f.verts.size()]
+			var v1 = f.verts[(i+1)%f.verts.size()]
 			var e0 = f.edges[i]
 			var e1 = f.edges[(i-1+f.edges.size())%f.edges.size()]
 			var idx_v0 = get_vertex.call(vertex_points[old_verts.find(v0)])
@@ -214,8 +237,11 @@ func catmull_clark_subdivide(mesh_topo: Dictionary) -> Dictionary:
 			f.edges.append(edge)
 		faces_objs.append(f)
 
+	# Mark boundary and decay sharpness
 	for edge in edges_objs:
-		edge.sharpness = 0.5
+		edge.is_boundary = edge.faces.size() == 1
+		# Decay sharpness by 1.0 per subdiv
+		edge.sharpness = max(0.0, edge.sharpness - 1.0)
 
 	return {
 		"vertices": verts_objs,
