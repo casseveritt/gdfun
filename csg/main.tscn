@@ -1,11 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://qn74q5rq7r4g"]
 
-[ext_resource type="ArrayMesh" uid="uid://dkyw6ia2oi3pv" path="res://mesh.tres" id="1_ig7tw"]
+[ext_resource type="ArrayMesh" uid="uid://cb2v6t0xf5yd1" path="res://mesh.tres" id="1_ig7tw"]
 
 [node name="Node3D" type="Node3D"]
 
 [node name="Piece" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.282224, 0.0942326, -0.954709, 0.182099, 0.97181, 0.149751, 0.941907, -0.216115, 0.257109, 0.14094, 0.473692, -0.155415)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.868492, -0.184925, -0.207327)
 mesh = ExtResource("1_ig7tw")
