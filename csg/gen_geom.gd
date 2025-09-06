@@ -30,8 +30,10 @@ func generate_rounded_cube_mesh(size, radius):
 	# Generate the inset faces
 	generate_inset_faces(st, size, radius)
 	
-	generate_facets(st)
-		
+	generate_edge_facets(st)
+
+	generate_corner_facets(st)
+
 	st.generate_normals()
 	return st.commit()
 
@@ -78,27 +80,30 @@ func add_inset_face(st : SurfTool, center, normal : Vector3, scale):
 	st.add_vert(unit_square[2])
 	st.add_vert(unit_square[3])
 
-	#st.add_index(vert_count + 0)
-	#st.add_index(vert_count + 2)
-	#st.add_index(vert_count + 1)
+	st.add_index(vert_count + 0)
+	st.add_index(vert_count + 2)
+	st.add_index(vert_count + 1)
 
-	#st.add_index(vert_count + 3)
-	#st.add_index(vert_count + 1)
-	#st.add_index(vert_count + 2)
+	st.add_index(vert_count + 3)
+	st.add_index(vert_count + 1)
+	st.add_index(vert_count + 2)
 
 enum Face {
-	XN,
-	XP,
-	YN,
-	YP,
-	ZN,
-	ZP
+	XN, # -X
+	XP, # +X
+	YN, # -Y
+	YP, # +Y
+	ZN, # -Z
+	ZP  # +Z
 	}
 
 func face_index(face : Face, idx : int):
 	return int(face) * 4 + idx
 
 func edge_index(edge : int, idx : int):
+	# edge order: -X +X -Y +Y
+	# vertex order:  2 3
+	#                0 1
 	const edge_idx = [ [0, 2], [3, 1], [1, 0], [2, 3]]
 	return edge_idx[edge][idx]
 
@@ -111,16 +116,7 @@ func gen_facet(st, f0 : Face, f1 : Face, f0e : int, f1e : int):
 	st.add_index(face_index(f0, edge_index(f0e, 1)))
 	st.add_index(face_index(f1, edge_index(f1e, 1)))
 
-func gen_facet_du(st, down, up):
-	st.add_index(face_index(down, 2))
-	st.add_index(face_index(up, 0))
-	st.add_index(face_index(down, 3))
-
-	st.add_index(face_index(up, 1))
-	st.add_index(face_index(down, 3))
-	st.add_index(face_index(up, 0))
-
-func generate_facets(st):
+func generate_edge_facets(st):
 	gen_facet(st, Face.XN, Face.ZP, 1, 0)
 	gen_facet(st, Face.ZP, Face.XP, 1, 0)
 	gen_facet(st, Face.XP, Face.ZN, 1, 0)
@@ -131,4 +127,40 @@ func generate_facets(st):
 	gen_facet(st, Face.ZN, Face.YN, 2, 2)
 	gen_facet(st, Face.YN, Face.ZP, 3, 2)
 	
-	
+	gen_facet(st, Face.XN, Face.YP, 3, 0)
+	gen_facet(st, Face.YP, Face.XP, 1, 3)
+	gen_facet(st, Face.XP, Face.YN, 2, 1)
+	gen_facet(st, Face.YN, Face.XN, 0, 2)
+
+func generate_corner_facets(st):
+	st.add_index(face_index(Face.XN, 0))
+	st.add_index(face_index(Face.YN, 0))
+	st.add_index(face_index(Face.ZN, 1))
+
+	st.add_index(face_index(Face.XP, 1))
+	st.add_index(face_index(Face.ZN, 0))
+	st.add_index(face_index(Face.YN, 1))
+
+	st.add_index(face_index(Face.XN, 2))
+	st.add_index(face_index(Face.ZN, 3))
+	st.add_index(face_index(Face.YP, 2))
+
+	st.add_index(face_index(Face.XP, 3))
+	st.add_index(face_index(Face.YP, 3))
+	st.add_index(face_index(Face.ZN, 2))
+
+	st.add_index(face_index(Face.XN, 1))
+	st.add_index(face_index(Face.ZP, 0))
+	st.add_index(face_index(Face.YN, 2))
+
+	st.add_index(face_index(Face.XP, 0))
+	st.add_index(face_index(Face.YN, 3))
+	st.add_index(face_index(Face.ZP, 1))
+
+	st.add_index(face_index(Face.XN, 3))
+	st.add_index(face_index(Face.YP, 0))
+	st.add_index(face_index(Face.ZP, 2))
+
+	st.add_index(face_index(Face.XP, 2))
+	st.add_index(face_index(Face.ZP, 3))
+	st.add_index(face_index(Face.YP, 1))
