@@ -35,3 +35,7 @@ func _process(delta: float) -> void:
 		cam.basis = incr_rotation(cam.basis, Vector3(1.0, 0.0, 0.0), -CAM_ROT_INCR)
 	if Input.is_action_pressed("cam_rot_up"):
 		cam.basis = incr_rotation(cam.basis, Vector3(1.0, 0.0, 0.0), CAM_ROT_INCR)
+	if Input.is_action_pressed("cam_roll_ccw"):
+		cam.basis = incr_rotation(cam.basis, Vector3(0.0, 0.0, 1.0), CAM_ROT_INCR)
+	if Input.is_action_pressed("cam_roll_cw"):
+		cam.basis = incr_rotation(cam.basis, Vector3(0.0, 0.0, 1.0), -CAM_ROT_INCR)

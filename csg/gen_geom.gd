@@ -14,7 +14,7 @@ class SurfTool:
 
 func _run():
 	var size = 1.0  # Full size of the cube
-	var radius = 0.05  # Radius of the spherical corner
+	var radius = 0.075  # Radius of the spherical corner
 	
 	var mesh = generate_rounded_cube_mesh(size, radius)
 	var error = ResourceSaver.save(mesh, "res://mesh.tres")

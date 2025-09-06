@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8ev6a3te6tj5"]
+[gd_scene load_steps=6 format=3 uid="uid://c8ev6a3te6tj5"]
 
 [ext_resource type="Script" uid="uid://c02j004apdmdn" path="res://speed_cube.gd" id="1_2e22g"]
 [ext_resource type="Script" uid="uid://bv7a202yg45qe" path="res://gd_speed_cube.gd" id="1_kyuas"]
-[ext_resource type="Material" uid="uid://c6sv5nr0ikmol" path="res://rubik_mat.tres" id="2_2e22g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_w17b2"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -26,6 +25,7 @@ shadow_enabled = true
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.449779, -0.218401, 0, 0.436802, -0.899558, 0.5, 0.77904, 0.378281, 0, 0, 0)
+visible = false
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -34,9 +34,6 @@ environment = SubResource("Environment_kyuas")
 [node name="SpeedCube" type="Node3D" parent="."]
 script = ExtResource("1_2e22g")
 
-[node name="Piece" type="CSGBox3D" parent="SpeedCube"]
-size = Vector3(0.1, 0.1, 0.1)
-material = ExtResource("2_2e22g")
-
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.89955, 0.436817, 0, -0.436817, 0.89955, 0.049033, 0.116081, 0.239234)
+transform = Transform3D(1, 0, 0, 0, 0.89955, 0.436817, 0, -0.436817, 0.89955, 0.049033, 0.116081, 1.27225)
+fov = 59.7

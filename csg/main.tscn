@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://qn74q5rq7r4g"]
 
-[ext_resource type="ArrayMesh" uid="uid://cb2v6t0xf5yd1" path="res://mesh.tres" id="1_ig7tw"]
+[ext_resource type="ArrayMesh" uid="uid://drr55nkwlvde4" path="res://mesh.tres" id="1_ig7tw"]
 
 [node name="Node3D" type="Node3D"]
 
