@@ -10,7 +10,7 @@ func _run():
 
 func make_rubik_cubemap():
 	var w := 256
-	var border := int(w >> 4)
+	var border := int(w / 12.0)
 	var rnd := 2 * border
 	var cubemap := Cubemap.new()
 

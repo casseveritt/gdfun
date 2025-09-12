@@ -35,5 +35,5 @@ environment = SubResource("Environment_kyuas")
 script = ExtResource("1_2e22g")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.89955, 0.436817, 0, -0.436817, 0.89955, 0.049033, 0.116081, 1.27225)
+transform = Transform3D(1, 0, 0, 0, 0.89955, 0.436817, 0, -0.436817, 0.89955, 0.049033, 0.116081, 0.932194)
 fov = 59.7
