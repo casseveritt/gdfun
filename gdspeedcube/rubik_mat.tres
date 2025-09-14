@@ -63,3 +63,4 @@ _images = Array[Image]([SubResource("Image_y78ma"), SubResource("Image_yf6ci"), 
 render_priority = 0
 shader = ExtResource("1_y78ma")
 shader_parameter/texcube = SubResource("Cubemap_q476n")
+shader_parameter/piece_scale = 0.333
