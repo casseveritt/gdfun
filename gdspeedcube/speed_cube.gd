@@ -39,6 +39,7 @@ func idx1_from_idx3(idx3: Vector3i) -> int:
 	return zidx.x + 3 * zidx.y + 9 * zidx.z
 
 func idx3_from_idx1(idx1: int) -> Vector3i:
+	@warning_ignore("integer_division")
 	return Vector3i(idx1 % 3, (idx1 / 3) % 3, idx1 / 9) - Vector3i(1, 1, 1)
 
 enum Axis {
@@ -66,7 +67,37 @@ func move(axis: Axis, slice: int, turns: int):
 				var piece_idx = cube2[idx1_from_idx3(source)]
 				cube[idx1_from_idx3(target)] = piece_idx
 				var piece = rc[piece_idx]
-				piece.quat = piece.quat * q_fwd
+				piece.quat =  q_fwd * piece.quat
+				piece.update_position()
+	elif axis == Axis.Y:
+		var q_fwd := Quaternion(Vector3(0, 1, 0), turns * PI * 0.5)
+		var q_back := q_fwd.inverse()
+		var b: Basis = q_back
+		for i in range(-1, 2):
+			for k in range(-1, 2):
+				var target = Vector3i(i, slice, k)
+				# The * 1.1 because 0.999 gets truncated to 0
+				# and floating point math is a little wobbly.
+				var source = Vector3i(b * (Vector3(target) * 1.1))
+				var piece_idx = cube2[idx1_from_idx3(source)]
+				cube[idx1_from_idx3(target)] = piece_idx
+				var piece = rc[piece_idx]
+				piece.quat = q_fwd * piece.quat
+				piece.update_position()
+	elif axis == Axis.Z:
+		var q_fwd := Quaternion(Vector3(0, 0, 1), turns * PI * 0.5)
+		var q_back := q_fwd.inverse()
+		var b: Basis = q_back
+		for i in range(-1, 2):
+			for j in range(-1, 2):
+				var target = Vector3i(i, j, slice)
+				# The * 1.1 because 0.999 gets truncated to 0
+				# and floating point math is a little wobbly.
+				var source = Vector3i(b * (Vector3(target) * 1.1))
+				var piece_idx = cube2[idx1_from_idx3(source)]
+				cube[idx1_from_idx3(target)] = piece_idx
+				var piece = rc[piece_idx]
+				piece.quat = q_fwd * piece.quat
 				piece.update_position()
 
 func _ready() -> void:
@@ -90,3 +121,5 @@ func _ready() -> void:
 				count += 1
 				self.add_child(piece)
 	move(Axis.X, -1, 1)
+	move(Axis.Y, 1, 1)
+	move(Axis.Z, 1, 1)
